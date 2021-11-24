@@ -6,12 +6,16 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import dagger.hilt.android.AndroidEntryPoint
 import live.adabe.resq.databinding.ActivityMainBinding
 import live.adabe.resq.util.Preferences
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var preferences: Preferences
+    @Inject
+    lateinit var preferences: Preferences
 
     val SMS_PERMISSION_CONSTANT = 100
     val LOCATION_PERMISSION_CONSTANT = 102
@@ -21,8 +25,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        preferences = Preferences(application)
 
         preferences.setIsSmsPermissionGranted(ActivityCompat.checkSelfPermission(
             applicationContext,
