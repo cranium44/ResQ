@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ResQ"
 include ':app'
+include ':resqwears'
