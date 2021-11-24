@@ -26,6 +26,10 @@ class Preferences(application: Application) {
     fun getIsLocationPermissionGranted(): Boolean =
         sharedPreferences.getBoolean(IS_LOCATION_PERMISSION_GRANTED, false)
 
+    fun getContactOne(): String? = sharedPreferences.getString(EMERGENCY_CONTACT_1, "")
+
+    fun getContactTwo(): String? = sharedPreferences.getString(EMERGENCY_CONTACT_2, "")
+
     fun setIsSmsPermissionGranted(booleanGranted: Boolean) {
         with(sharedPreferences.edit()) {
             putBoolean(IS_SMS_PERMISSION_GRANTED, booleanGranted)
@@ -36,6 +40,20 @@ class Preferences(application: Application) {
     fun setIsLocationPermissionGranted(booleanGranted: Boolean) {
         with(sharedPreferences.edit()) {
             putBoolean(IS_LOCATION_PERMISSION_GRANTED, booleanGranted)
+            apply()
+        }
+    }
+
+    fun setContactOne(number: String){
+        with(sharedPreferences.edit()){
+            putString(EMERGENCY_CONTACT_1, number)
+            apply()
+        }
+    }
+
+    fun setContactTwo(number: String){
+        with(sharedPreferences.edit()){
+            putString(EMERGENCY_CONTACT_2, number)
             apply()
         }
     }
