@@ -31,35 +31,35 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.SEND_SMS
         ) == PackageManager.PERMISSION_GRANTED)
 
-        if (ActivityCompat.checkSelfPermission(
-                applicationContext,
-                Manifest.permission.SEND_SMS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            AlertDialog.Builder(applicationContext).setTitle("Need SMS Permissions")
-                .setMessage("This app needs permission to send sms to your emergency contact on your behalf.")
-                .setPositiveButton(
-                    "Grant permission"
-                ) { _, _ ->
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.SEND_SMS),
-                        SMS_PERMISSION_CONSTANT
-                    )
-                }.setNegativeButton("Cancel"){ dialog, _ -> dialog.cancel()}.show()
-        }else if(preferences.getIsSmsPermissionGranted()){
-            AlertDialog.Builder(applicationContext).setTitle("Need SMS Permissions")
-                .setMessage("This app needs permission to send sms to your emergency contact on your behalf.")
-                .setPositiveButton(
-                    "Grant permission"
-                ) { _, _ ->
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(Manifest.permission.SEND_SMS),
-                        SMS_PERMISSION_CONSTANT
-                    )
-                }.setNegativeButton("Cancel"){ dialog, _ -> dialog.cancel()}.show()
-        }
+//        if (ActivityCompat.checkSelfPermission(
+//                applicationContext,
+//                Manifest.permission.SEND_SMS
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            AlertDialog.Builder(applicationContext).setTitle("Need SMS Permissions")
+//                .setMessage("This app needs permission to send sms to your emergency contact on your behalf.")
+//                .setPositiveButton(
+//                    "Grant permission"
+//                ) { _, _ ->
+//                    ActivityCompat.requestPermissions(
+//                        this,
+//                        arrayOf(Manifest.permission.SEND_SMS),
+//                        SMS_PERMISSION_CONSTANT
+//                    )
+//                }.setNegativeButton("Cancel"){ dialog, _ -> dialog.cancel()}.show()
+//        }else if(preferences.getIsSmsPermissionGranted()){
+//            AlertDialog.Builder(applicationContext).setTitle("Need SMS Permissions")
+//                .setMessage("This app needs permission to send sms to your emergency contact on your behalf.")
+//                .setPositiveButton(
+//                    "Grant permission"
+//                ) { _, _ ->
+//                    ActivityCompat.requestPermissions(
+//                        this,
+//                        arrayOf(Manifest.permission.SEND_SMS),
+//                        SMS_PERMISSION_CONSTANT
+//                    )
+//                }.setNegativeButton("Cancel"){ dialog, _ -> dialog.cancel()}.show()
+//        }
     }
 
 

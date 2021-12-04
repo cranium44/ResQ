@@ -19,29 +19,32 @@ class MessageUtil @Inject constructor(
             val smsManager: SmsManager = SmsManager.getDefault()
             preferences.getContactOne()?.let { contact ->
                 smsManager.sendTextMessage(
-                    contact,
+                    "911",
                     null,
                     application.getString(
                         R.string.emergency_text,
-                        location.latitude,
-                        location.longitude
+                        location.latitude.toInt(),
+                        location.longitude.toInt()
                     ), null, null
                 )
                 Toast.makeText(
                     application, "Your Message Sent",
                     Toast.LENGTH_LONG
                 ).show()
-            }?: kotlin.run {
+            } ?: kotlin.run {
                 preferences.getContactTwo()?.let { contact2 ->
-                    smsManager.sendTextMessage(contact2,null, application.getString(
-                        R.string.emergency_text,
-                        location.latitude,
-                        location.longitude), null, null)
+                    smsManager.sendTextMessage(
+                        contact2, null, application.getString(
+                            R.string.emergency_text,
+                            location.latitude,
+                            location.longitude
+                        ), null, null
+                    )
                     Toast.makeText(
                         application, "Your Message Sent",
                         Toast.LENGTH_LONG
                     ).show()
-                }?: run {
+                } ?: run {
                     Toast.makeText(
                         application, "No emergency contact found",
                         Toast.LENGTH_LONG
