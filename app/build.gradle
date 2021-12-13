@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 29
 
     defaultConfig {
         applicationId "live.adabe.resq"
         minSdk 21
-        targetSdk 31
+        targetSdk 29
         versionCode 1
         versionName "1.0"
 
@@ -36,6 +36,7 @@ android {
     buildFeatures{
         viewBinding true
     }
+    buildToolsVersion '32.0.0'
 }
 
 dependencies {
