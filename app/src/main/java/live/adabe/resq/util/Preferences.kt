@@ -13,6 +13,7 @@ class Preferences(application: Application) {
         private const val IS_LOCATION_PERMISSION_GRANTED = "location"
         private const val EMERGENCY_CONTACT_1 = "first-contact"
         private const val EMERGENCY_CONTACT_2 = "second-contact"
+        private const val USER_NAME = "username"
     }
 
     init {
@@ -29,6 +30,8 @@ class Preferences(application: Application) {
     fun getContactOne(): String? = sharedPreferences.getString(EMERGENCY_CONTACT_1, "")
 
     fun getContactTwo(): String? = sharedPreferences.getString(EMERGENCY_CONTACT_2, "")
+
+    fun getUserName(): String? = sharedPreferences.getString(USER_NAME, "")
 
     fun setIsSmsPermissionGranted(booleanGranted: Boolean) {
         with(sharedPreferences.edit()) {
@@ -54,6 +57,13 @@ class Preferences(application: Application) {
     fun setContactTwo(number: String){
         with(sharedPreferences.edit()){
             putString(EMERGENCY_CONTACT_2, number)
+            apply()
+        }
+    }
+
+    fun setUserName(name: String){
+        with(sharedPreferences.edit()){
+            putString(USER_NAME, name)
             apply()
         }
     }

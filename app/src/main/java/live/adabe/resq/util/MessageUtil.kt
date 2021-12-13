@@ -19,7 +19,7 @@ class MessageUtil @Inject constructor(
             val smsManager: SmsManager = SmsManager.getDefault()
             preferences.getContactOne()?.let { contact ->
                 smsManager.sendTextMessage(
-                    "911",
+                    contact,
                     null,
                     application.getString(
                         R.string.emergency_text,
