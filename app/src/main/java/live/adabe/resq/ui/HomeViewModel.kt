@@ -10,4 +10,12 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private var appRepository: AppRepository) : ViewModel() {
 
 
+    fun saveUserInfo(name: String, contactOne: String, contactTwo: String){
+        appRepository.run {
+            saveFirstContact(contactOne)
+            saveSecondContact(contactTwo)
+            saveUserName(name)
+        }
+    }
+
 }

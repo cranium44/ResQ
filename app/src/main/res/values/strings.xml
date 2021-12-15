@@ -9,4 +9,6 @@
     <string name="first_emergency_contact">First Emergency Contact</string>
     <string name="second_emergency_contact">Second Emergency Contact</string>
     <string name="submit">Submit</string>
+    <string name="empty_field_error">Field cannot be left empty!</string>
+    <string name="phone_error_text">Please enter valid phone number</string>
 </resources>

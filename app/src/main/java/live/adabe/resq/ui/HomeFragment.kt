@@ -24,6 +24,11 @@ class HomeFragment : Fragment() {
     private lateinit var binding: HomeFragmentBinding
     private lateinit var provider: FusedLocationProviderClient
 
+    companion object {
+        private const val LOCATION_PERMISSION_CONSTANT = 101
+        private const val SMS_PERMISSION_CONSTANT = 102
+    }
+
     @Inject
     lateinit var messageUtil: MessageUtil
 
@@ -39,11 +44,19 @@ class HomeFragment : Fragment() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+            ) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
+            ) != PackageManager.PERMISSION_GRANTED
         ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission
+                        .ACCESS_COARSE_LOCATION
+                ), LOCATION_PERMISSION_CONSTANT
+            )
+        } else {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -85,11 +98,19 @@ class HomeFragment : Fragment() {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        provider.lastLocation.addOnSuccessListener {location ->
+        provider.lastLocation.addOnSuccessListener { location ->
             binding.button.setOnClickListener {
                 messageUtil.sendText(location)
             }
         }
     }
 
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
 }

@@ -14,6 +14,7 @@ class Preferences(application: Application) {
         private const val EMERGENCY_CONTACT_1 = "first-contact"
         private const val EMERGENCY_CONTACT_2 = "second-contact"
         private const val USER_NAME = "username"
+        private const val REGISTERED = "registered"
     }
 
     init {
@@ -32,6 +33,15 @@ class Preferences(application: Application) {
     fun getContactTwo(): String? = sharedPreferences.getString(EMERGENCY_CONTACT_2, "")
 
     fun getUserName(): String? = sharedPreferences.getString(USER_NAME, "")
+
+    fun getIsRegistered(): Boolean = sharedPreferences.getBoolean(REGISTERED, false)
+
+    fun setIsRegistered(isRegistered: Boolean){
+        with(sharedPreferences.edit()){
+            putBoolean(REGISTERED, isRegistered)
+            apply()
+        }
+    }
 
     fun setIsSmsPermissionGranted(booleanGranted: Boolean) {
         with(sharedPreferences.edit()) {
