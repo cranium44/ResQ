@@ -15,6 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import live.adabe.resq.R
 import live.adabe.resq.databinding.HomeFragmentBinding
 import live.adabe.resq.util.MessageUtil
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,7 +39,6 @@ class HomeFragment : Fragment() {
     ): View {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
         provider = LocationServices.getFusedLocationProviderClient(requireContext())
 
         if (ActivityCompat.checkSelfPermission(
@@ -65,12 +65,12 @@ class HomeFragment : Fragment() {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             provider.lastLocation.addOnSuccessListener {
-                binding.textView.setText(
-                    getString(
-                        R.string.emergency_text,
-                        it.latitude.toInt(),
-                        it.longitude.toInt()
-                    )
+                var location = it
+                Timber.d(it.toString())
+                binding.textView.text = getString(
+                    R.string.emergency_text,
+                    it.latitude.toInt(),
+                    it.longitude.toInt()
                 )
             }
         }

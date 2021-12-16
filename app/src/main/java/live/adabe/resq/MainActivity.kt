@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         if (!preferences.getIsRegistered()){
             navigationService.openSignupScreen()
         }else{
-            navigationService.openSignupScreen()
+            navigationService.openHomeScreen()
         }
     }
 
