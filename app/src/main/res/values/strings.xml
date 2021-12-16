@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">ResQ</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="emergency_text">My location is latitude: %1$d, longitude: %2$d</string>
+    <string name="register">Register</string>
+    <string name="provide_contact_text">Please provide the numbers to two emergency contacts.</string>
+    <string name="your_name">Your Name</string>
+    <string name="first_emergency_contact">First Emergency Contact</string>
+    <string name="second_emergency_contact">Second Emergency Contact</string>
+    <string name="submit">Submit</string>
+    <string name="empty_field_error">Field cannot be left empty!</string>
+    <string name="phone_error_text">Please enter valid phone number</string>
 </resources>
