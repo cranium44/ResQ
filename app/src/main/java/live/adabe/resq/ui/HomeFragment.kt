@@ -17,12 +17,13 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import live.adabe.resq.MainActivity
@@ -35,16 +36,14 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), DataApi.DataListener, GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener {
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: HomeFragmentBinding
     private lateinit var provider: FusedLocationProviderClient
+    private lateinit var apiClient: GoogleApiClient
 
-
-    private lateinit var myHandler: Handler
-    var receivedMessageNumber = 1
-    var sentMessageNumber = 1
 
     companion object {
         private const val LOCATION_PERMISSION_CONSTANT = 101
@@ -96,23 +95,10 @@ class HomeFragment : Fragment() {
             )
         }
 
-        myHandler = Handler { msg ->
-            val stuff = msg.data
-            stuff.getString("messageText")?.let {
-                Snackbar.make(
-                    binding.root, it, Snackbar
-                        .LENGTH_SHORT
-                ).show()
-            }
-            true
-        }
-
-        //Register to receive local broadcasts, which we'll be creating in the next step//
-        val messageFilter = IntentFilter(Intent.ACTION_SEND)
-        val messageReceiver = HomeFragment().Receiver()
-        LocalBroadcastManager.getInstance(requireContext())
-            .registerReceiver(messageReceiver, messageFilter)
-
+        apiClient = GoogleApiClient.Builder(requireContext()).addApi(Wearable.API)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .build()
 
         return binding.root
     }
@@ -137,73 +123,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.wearBtn.setOnClickListener {
-            talkClick(it)
-        }
-    }
 
-    //Define a nested class that extends BroadcastReceiver//
-    inner class Receiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-
-//Upon receiving each message from the wearable, display the following text//
-            val message = "I just received a message from the wearable ${receivedMessageNumber++} "
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    fun talkClick(v: View?) {
-        val message = "Sending message.... "
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-
-        //Sending a message can block the main UI thread, so use a new thread//
-        NewThread("/my_path", message).start()
-    }
-
-
-    //Use a Bundle to encapsulate our message//
-    fun sendmessage(messageText: String?) {
-        val bundle = Bundle()
-        bundle.putString("messageText", messageText)
-        val msg: Message = myHandler.obtainMessage()
-        msg.data = bundle
-        myHandler.sendMessage(msg)
-    }
-
-
-    inner class NewThread(var path: String, var message: String) : Thread() {
-        override fun run() {
-
-//Retrieve the connected devices, known as nodes//
-            val wearableList: Task<List<Node>> =
-                Wearable.getNodeClient(requireContext()).connectedNodes
-            try {
-                val nodes: List<Node> = Tasks.await(wearableList)
-                for (node in nodes) {
-                    val sendMessageTask: Task<Int> =  //Send the message//
-                        Wearable.getMessageClient(requireActivity())
-                            .sendMessage(node.id, path, message.toByteArray())
-                    try {
-
-                        //Block on a task and get the result synchronously//
-                        val result: Int = Tasks.await(sendMessageTask)
-                        sendmessage("I just sent the wearable a message " + sentMessageNumber++)
-
-                        //if the Task fails, then…..//
-                    } catch (exception: ExecutionException) {
-
-                        //TO DO: Handle the exception//
-                    } catch (exception: InterruptedException) {
-
-                        //TO DO: Handle the exception//
-                    }
-                }
-            } catch (exception: ExecutionException) {
-
-                //TO DO: Handle the exception//
-            } catch (exception: InterruptedException) {
-
-                //TO DO: Handle the exception//
-            }
         }
     }
 
@@ -214,5 +134,29 @@ class HomeFragment : Fragment() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onDataChanged(dataEventBuffer: DataEventBuffer) {
+        dataEventBuffer.forEach { dataEvent ->  
+            if (dataEvent.type == DataEvent.TYPE_CHANGED){
+                val dataItem = dataEvent.dataItem
+                if (dataItem.uri.path?.compareTo("/resq") ?: 1  == 0){
+                    val dataMap = DataMapItem.fromDataItem(dataItem).dataMap
+                    Toast.makeText(requireContext(), dataMap.getString("message"), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    override fun onConnected(p0: Bundle?) {
+        Wearable.DataApi.addListener(apiClient, this)
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+
     }
 }
