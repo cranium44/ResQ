@@ -1,10 +1,10 @@
 package live.adabe.resq.util
 
 import android.app.Application
-import android.location.Location
 import android.telephony.SmsManager
 import android.widget.Toast
 import live.adabe.resq.R
+import live.adabe.resq.model.LocationDTO
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -14,32 +14,36 @@ class MessageUtil @Inject constructor(
     private var preferences: Preferences
 ) {
 
-    fun sendText(location: Location) {
+    fun sendText(location: LocationDTO?) {
         try {
             val smsManager: SmsManager = SmsManager.getDefault()
             preferences.getContactOne()?.let { contact ->
-                smsManager.sendTextMessage(
-                    contact,
-                    null,
-                    application.getString(
-                        R.string.emergency_text,
-                        location.latitude.toInt(),
-                        location.longitude.toInt()
-                    ), null, null
-                )
+                if (location != null) {
+                    smsManager.sendTextMessage(
+                        contact,
+                        null,
+                        application.getString(
+                            R.string.emergency_text,
+                            location.latitude.toString(),
+                            location.longitude.toString()
+                        ), null, null
+                    )
+                }
                 Toast.makeText(
                     application, "Your Message Sent",
                     Toast.LENGTH_LONG
                 ).show()
             } ?: kotlin.run {
                 preferences.getContactTwo()?.let { contact2 ->
-                    smsManager.sendTextMessage(
-                        contact2, null, application.getString(
-                            R.string.emergency_text,
-                            location.latitude,
-                            location.longitude
-                        ), null, null
-                    )
+                    if (location != null) {
+                        smsManager.sendTextMessage(
+                            contact2, null, application.getString(
+                                R.string.emergency_text,
+                                location.latitude.toString(),
+                                location.longitude.toString()
+                            ), null, null
+                        )
+                    }
                     Toast.makeText(
                         application, "Your Message Sent",
                         Toast.LENGTH_LONG
